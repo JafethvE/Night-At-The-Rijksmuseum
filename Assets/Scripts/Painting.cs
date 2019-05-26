@@ -1,11 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
 
 namespace NightAtTheRijksmuseum
 {
     public class Painting : MonoBehaviour
     {
+        [SerializeField]
+        private Text youWinText;
+
         [SerializeField]
         private string pantingName;
 
@@ -39,6 +41,19 @@ namespace NightAtTheRijksmuseum
         private void Start()
         {
             outline.material.color = outlineColor;
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if(other.GetComponent<Enemy>())
+            {
+                Enemy enemy = other.GetComponent<Enemy>();
+                if(enemy.Painting == this)
+                {
+                    enemy.Die();
+                    youWinText.text = "You Win!";
+                }
+            }
         }
     }
 }
