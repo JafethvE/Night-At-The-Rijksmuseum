@@ -109,9 +109,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   controller: {fileID: 8293717195854763216}
-  movementSpeed: 3
-  attackThrowDistance: 5
-  attackDelay: 5
+  movementSpeed: 7
+  attackThrowDistance: 7
+  attackDelay: 3
   renderer: {fileID: 1950182911385011995}
   painting: {fileID: 0}
   patrolPoints:
@@ -121,6 +121,7 @@ MonoBehaviour:
   - {fileID: 0}
   patrolPointDistance: 0.2
   outline: {fileID: 8395531979125890547}
+  game: {fileID: 0}
 --- !u!143 &8293717195854763216
 CharacterController:
   m_ObjectHideFlags: 0
