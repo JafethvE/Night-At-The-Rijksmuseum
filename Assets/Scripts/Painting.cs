@@ -6,9 +6,6 @@ namespace NightAtTheRijksmuseum
     public class Painting : MonoBehaviour
     {
         [SerializeField]
-        private Text youWinText;
-
-        [SerializeField]
         private string pantingName;
 
         public string PantingName
@@ -51,7 +48,6 @@ namespace NightAtTheRijksmuseum
                 if(enemy.Painting == this)
                 {
                     enemy.Die();
-                    youWinText.text = "You Win!";
                 }
             }
         }

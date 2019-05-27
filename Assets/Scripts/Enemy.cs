@@ -25,6 +25,11 @@ namespace NightAtTheRijksmuseum
         [SerializeField]
         protected Outline outline;
 
+        [SerializeField]
+        private Game game;
+
+        private Transform movementTarget;
+
         public Transform CurrentPatrolPoint
         {
             get
@@ -35,10 +40,14 @@ namespace NightAtTheRijksmuseum
             private set
             {
                 currentPatrolPoint = value;
-                Vector3 target = new Vector3(currentPatrolPoint.position.x, transform.position.y, currentPatrolPoint.position.z);
-                transform.LookAt(target);
-                currentDelay = 0;
+                movementTarget = currentPatrolPoint;
             }
+        }
+
+        private void ProcessMovementDirection()
+        {
+            Vector3 movementTargetPosition = new Vector3(movementTarget.position.x, transform.position.y, movementTarget.position.z);
+            transform.LookAt(movementTargetPosition);
         }
 
         public Character TargetEnemy
@@ -52,8 +61,7 @@ namespace NightAtTheRijksmuseum
                 targetEnemy = value;
                 if(targetEnemy != null)
                 {
-                    Vector3 target = new Vector3(targetEnemy.transform.position.x, transform.position.y, targetEnemy.transform.position.z);
-                    transform.LookAt(target);
+                    movementTarget = targetEnemy.transform;
                 }
             }
         }
@@ -92,6 +100,8 @@ namespace NightAtTheRijksmuseum
 
         private void Update()
         {
+            currentDelay += Time.deltaTime;
+
             if (targetEnemy)
             {
                 if(enemyWithinReach)
@@ -100,13 +110,10 @@ namespace NightAtTheRijksmuseum
                     {
                         Attack();
                     }
-                    else
-                    {
-                        currentDelay += Time.deltaTime;
-                    }
                 }
                 else
                 {
+                    ProcessMovementDirection();
                     Move();
                 }
             }
@@ -115,11 +122,13 @@ namespace NightAtTheRijksmuseum
                 //patrol the designated route
                 if (Mathf.Abs(transform.position.x - CurrentPatrolPoint.position.x) > patrolPointDistance || Mathf.Abs(transform.position.z - CurrentPatrolPoint.position.z) > patrolPointDistance)
                 {
+                    ProcessMovementDirection();
                     Move();
                 }
                 else
                 {
                     ChooseNextPatrolPoint();
+                    ProcessMovementDirection();
                     Move();
                 }
             }
@@ -155,7 +164,7 @@ namespace NightAtTheRijksmuseum
             }
         }
 
-        protected override void OnTriggerStay(Collider other)
+        protected override void OnTriggerEnter(Collider other)
         {
             if (other.GetComponent<Player>())
             {
@@ -175,6 +184,7 @@ namespace NightAtTheRijksmuseum
 
         public void Die()
         {
+            game.OnEmemyDeath(this);
             Destroy(gameObject);
         }
     }

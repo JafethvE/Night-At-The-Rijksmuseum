@@ -26,12 +26,8 @@ namespace NightAtTheRijksmuseum
         private void Update()
         {
             ProcessInput();
-
-            if(targetEnemy)
-            {
-                currentDelay += Time.deltaTime;
-                attackRadial.fillAmount = Mathf.Min(currentDelay / attackDelay, 1.0f);
-            }
+            currentDelay += Time.deltaTime;
+            attackRadial.fillAmount = Mathf.Min(currentDelay / attackDelay, 1.0f);
 
             if(damaged)
             {
@@ -88,9 +84,12 @@ namespace NightAtTheRijksmuseum
         {
             if(Input.GetMouseButtonDown(0))
             {
-                if (currentDelay >= attackDelay)
-                {
-                    Attack();
+                if(targetEnemy != null)
+                { 
+                    if (currentDelay >= attackDelay)
+                    {
+                        Attack();
+                    }
                 }
             }
         }
@@ -110,12 +109,15 @@ namespace NightAtTheRijksmuseum
             controller.Move(relativeMovement * Time.deltaTime);
         }
 
-        protected override void OnTriggerStay(Collider other)
+        protected override void OnTriggerEnter(Collider other)
         {
-            if(other.GetComponent<Enemy>())
-            {
-                targetEnemy = other.GetComponent<Enemy>();
-                other.GetComponent<Enemy>().OnTargeted();
+            if(targetEnemy == null)
+            { 
+                if(other.GetComponent<Enemy>())
+                {
+                    targetEnemy = other.GetComponent<Enemy>();
+                    other.GetComponent<Enemy>().OnTargeted();
+                }
             }
         }
 
@@ -125,7 +127,6 @@ namespace NightAtTheRijksmuseum
             {
                 other.GetComponent<Enemy>().OnLostTargeting();
                 targetEnemy = null;
-                currentDelay = 0;
             }
         }
 
